@@ -1,13 +1,30 @@
-import React from "react"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import React, { useState, useCallback } from "react"
+import { ChevronLeft, ChevronRight, X, Search } from "lucide-react"
 import { useSelector, useDispatch } from "react-redux"
 import { selectImage, removeImage } from "../redux/annotator_details/actions"
+import { debounce } from "../utils/common"
 
 const ImageGallery = () => {
   const dispatch = useDispatch()
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const images = useSelector((state) => state.anotator_details.images)
   const selectedImageId = useSelector(
     (state) => state.anotator_details.selectedImageId
+  )
+
+  const debouncedSetQuery = useCallback(
+    debounce((value) => {
+      setDebouncedQuery(value)
+    }, 50),
+    []
+  )
+
+  const handleSearchChange = (e) => {
+    debouncedSetQuery(e.target.value)
+  }
+
+  const filteredImages = images.filter((image) =>
+    image.name?.toLowerCase().includes(debouncedQuery.toLowerCase())
   )
 
   if (images?.length === 0) return null
@@ -33,11 +50,25 @@ const ImageGallery = () => {
     <div className="w-full flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-500">
-          {images?.length} {images?.length === 1 ? "image" : "images"}
+          {filteredImages?.length}{" "}
+          {filteredImages?.length === 1 ? "image" : "images"}
         </div>
 
         {images?.length > 1 && (
           <div className="flex items-center gap-2">
+            <div className="relative">
+              <input
+                type="text"
+                value={debouncedQuery}
+                onChange={handleSearchChange}
+                placeholder="Search images..."
+                className="px-3 py-1 pr-8 text-sm border border-gray-200 rounded-md focus:outline-none focus:border-blue-500"
+              />
+              <Search
+                size={16}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+            </div>
             <button
               onClick={handlePrevious}
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -56,28 +87,32 @@ const ImageGallery = () => {
         )}
       </div>
       <div className="flex overflow-x-auto gap-2 pb-2">
-        {images.map((image) => (
-          <div
-            key={image.id}
-            className={`relative cursor-pointer flex-shrink-0 w-20 h-20 rounded-md border-2 overflow-hidden transition-all ${
-              image.id === selectedImageId
-                ? "border-blue-500 shadow-md"
-                : "border-gray-200"
-            }`}
-            onClick={() => dispatch(selectImage(image.id))}
-          >
-            <img
-              src={image.src}
-              alt="Uploaded"
-              className="w-full h-full object-cover"
-            />
-            <button
-              onClick={(e) => handleRemove(image.id, e)}
-              className="absolute top-0 right-0 bg-black/50 p-0.5 rounded-bl-md text-white hover:bg-black/70 transition-colors"
-              aria-label="Remove image"
+        {filteredImages.map((image) => (
+          <div key={image.id} className="flex flex-col items-center gap-1">
+            <div
+              className={`relative cursor-pointer flex-shrink-0 w-20 h-20 rounded-md border-2 overflow-hidden transition-all ${
+                image.id === selectedImageId
+                  ? "border-blue-500 shadow-md"
+                  : "border-gray-200"
+              }`}
+              onClick={() => dispatch(selectImage(image.id))}
             >
-              <X size={12} />
-            </button>
+              <img
+                src={image.src}
+                alt="Uploaded"
+                className="w-full h-full object-cover"
+              />
+              <button
+                onClick={(e) => handleRemove(image.id, e)}
+                className="absolute top-0 right-0 bg-black/50 p-0.5 rounded-bl-md text-white hover:bg-black/70 transition-colors"
+                aria-label="Remove image"
+              >
+                <X size={12} />
+              </button>
+            </div>
+            <span className="text-xs text-gray-600 truncate w-20 text-center">
+              {image.name || "Untitled"}
+            </span>
           </div>
         ))}
       </div>
