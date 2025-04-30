@@ -143,7 +143,6 @@ const Reducer = (state = initialState, action) => {
 
     case ADD_REPLY: {
       const updatedImages = state.images.map((img) => {
-        console.log("checkreply", img.id, action.payload.imageId)
 
         if (img.id === action.payload.imageId) {
           const updatedComments = (img.comments || []).map((comment) => {
@@ -198,10 +197,8 @@ const Reducer = (state = initialState, action) => {
     }
 
     case DELETE_REPLY: {
-      console.log('deletecheck');
       const updatedImages = state.images.map((img) => {
-        console.log('deletecheck');
-        
+    
         if (img.id === action.payload.selectedImageId) {
           const updatedComments = (img.comments || []).map((comment) => {
             if (comment.id === action.payload.commentId) {

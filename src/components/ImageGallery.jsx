@@ -8,9 +8,6 @@ const ImageGallery = () => {
   const images = useSelector((state) => state.anotator_details.images);
   const selectedImageId = useSelector((state) => state.anotator_details.selectedImageId);
 
-  console.log('selectedImageIdtest',selectedImageId);
-  
-
   if (images?.length === 0) return null;
 
   const handlePrevious = () => {
@@ -25,9 +22,7 @@ const ImageGallery = () => {
     dispatch(selectImage(images[newIndex].id));
   };
 
-  const handleRemove = (id, e) => {
-    console.log('remove',id);
-    
+  const handleRemove = (id, e) => {    
     e.stopPropagation();
     dispatch(removeImage(id));
   };

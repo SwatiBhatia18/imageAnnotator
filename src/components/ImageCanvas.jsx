@@ -19,9 +19,7 @@ const ImageCanvas = () => {
   
   
   const selectedImage = images.find((img) => img.id === selectedImageId);
-  console.log('images',images, 'selectedImage', selectedImage);
-
-
+ 
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
@@ -62,12 +60,6 @@ const ImageCanvas = () => {
       </div>
     );
   }
-
-  console.log('commentPosition', commentPosition );
-
-  console.log('selectedImage',selectedImage);
-  
-  
 
   return (
     <div

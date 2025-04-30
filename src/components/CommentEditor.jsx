@@ -143,7 +143,7 @@ const CommentEditor = ({
       )
     }
 
-    setReplyContent("") 
+    setReplyContent("")
   }
 
   const handleCancelReply = () => {
@@ -153,8 +153,7 @@ const CommentEditor = ({
 
   const handleDeleteReply = (replyId) => {
     if (commentId) {
-      console.log("selectedImageIdhhh", selectedImageId)
-      dispatch(deleteReply({commentId, selectedImageId , replyId}))
+      dispatch(deleteReply({ commentId, selectedImageId, replyId }))
     }
   }
 
@@ -177,13 +176,15 @@ const CommentEditor = ({
       return ""
     }
   }
-  console.log("isNewComment", isNewComment)
+
   return (
     <div className="bg-white rounded-lg shadow-lg w-64 overflow-hidden animate-fadeIn">
       {/* Header */}
       <div className="bg-blue-500 text-white px-3 py-2 flex justify-between items-center">
         <h3 className="text-sm font-medium">
-          {isNewComment ? "New Comment" : `Comment ${replies.length}`}
+          {isNewComment
+            ? "New Comment"
+            : "Comment"}
         </h3>
         <button
           onClick={handleClose}
