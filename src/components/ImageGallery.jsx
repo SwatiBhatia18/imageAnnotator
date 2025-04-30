@@ -1,38 +1,39 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectImage, removeImage } from '../redux/annotator_details/actions';
+import React from "react"
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { useSelector, useDispatch } from "react-redux"
+import { selectImage, removeImage } from "../redux/annotator_details/actions"
 
 const ImageGallery = () => {
-  const dispatch = useDispatch();
-  const images = useSelector((state) => state.anotator_details.images);
-  const selectedImageId = useSelector((state) => state.anotator_details.selectedImageId);
+  const dispatch = useDispatch()
+  const images = useSelector((state) => state.anotator_details.images)
+  const selectedImageId = useSelector(
+    (state) => state.anotator_details.selectedImageId
+  )
 
-  if (images?.length === 0) return null;
+  if (images?.length === 0) return null
 
   const handlePrevious = () => {
-    const currentIndex = images.findIndex((img) => img.id === selectedImageId);
-    const newIndex = currentIndex > 0 ? currentIndex - 1 : images?.length - 1;
-    dispatch(selectImage(images[newIndex].id));
-  };
+    const currentIndex = images.findIndex((img) => img.id === selectedImageId)
+    const newIndex = currentIndex > 0 ? currentIndex - 1 : images?.length - 1
+    dispatch(selectImage(images[newIndex].id))
+  }
 
   const handleNext = () => {
-    const currentIndex = images.findIndex((img) => img.id === selectedImageId);
-    const newIndex = currentIndex < images?.length - 1 ? currentIndex + 1 : 0;
-    dispatch(selectImage(images[newIndex].id));
-  };
+    const currentIndex = images.findIndex((img) => img.id === selectedImageId)
+    const newIndex = currentIndex < images?.length - 1 ? currentIndex + 1 : 0
+    dispatch(selectImage(images[newIndex].id))
+  }
 
-  const handleRemove = (id, e) => {    
-    e.stopPropagation();
-    dispatch(removeImage(id));
-  };
+  const handleRemove = (id, e) => {
+    e.stopPropagation()
+    dispatch(removeImage(id))
+  }
 
   return (
     <div className="w-full flex flex-col gap-4">
-      {/* Navigation and count */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-500">
-          {images?.length} {images?.length === 1 ? 'image' : 'images'}
+          {images?.length} {images?.length === 1 ? "image" : "images"}
         </div>
 
         {images?.length > 1 && (
@@ -54,19 +55,19 @@ const ImageGallery = () => {
           </div>
         )}
       </div>
-
-      {/* Thumbnails */}
       <div className="flex overflow-x-auto gap-2 pb-2">
         {images.map((image) => (
           <div
             key={image.id}
             className={`relative cursor-pointer flex-shrink-0 w-20 h-20 rounded-md border-2 overflow-hidden transition-all ${
-              image.id === selectedImageId ? 'border-blue-500 shadow-md' : 'border-gray-200'
+              image.id === selectedImageId
+                ? "border-blue-500 shadow-md"
+                : "border-gray-200"
             }`}
             onClick={() => dispatch(selectImage(image.id))}
           >
             <img
-              src={image.src || image.url} 
+              src={image.src}
               alt="Uploaded"
               className="w-full h-full object-cover"
             />
@@ -81,7 +82,7 @@ const ImageGallery = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ImageGallery;
+export default ImageGallery

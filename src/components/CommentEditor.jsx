@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import { X, Check, Edit, Trash2, Send } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -11,6 +11,7 @@ import {
   deleteReply,
   setActiveComment,
 } from "../redux/annotator_details/actions"
+import { formatDate, debounce } from "../utils/common"
 
 const CommentEditor = ({
   commentId,
@@ -46,13 +47,17 @@ const CommentEditor = ({
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
-      textareaRef.current.focus()
+      const el = textareaRef.current
+      el.focus()
+      el.setSelectionRange(el.value.length, el.value.length)
     }
   }, [isEditing])
 
   useEffect(() => {
     if (editingReplyId && replyTextareaRef.current) {
-      replyTextareaRef.current.focus()
+      const el = replyTextareaRef.current
+      el.focus()
+      el.setSelectionRange(el.value.length, el.value.length)
     }
   }, [editingReplyId])
 
@@ -62,14 +67,40 @@ const CommentEditor = ({
     textarea.style.height = `${textarea.scrollHeight}px`
   }
 
+
+  const debouncedAutoResize = useCallback(
+    debounce((textarea) => {
+      if (!textarea) return
+      textarea.style.height = "auto"
+      textarea.style.height = `${textarea.scrollHeight}px`
+    }, 150),
+    []
+  )
+
+  const debouncedSetContent = useCallback(
+    debounce((value) => {
+      setContent(value)
+    }, 50),
+    []
+  )
+
+  const debouncedSetReplyContent = useCallback(
+    debounce((value) => {
+      setReplyContent(value)
+    }, 50),
+    []
+  )
+
   const handleContentChange = (e) => {
-    setContent(e.target.value)
-    autoResizeTextarea(e.target)
+    e.persist()
+    debouncedSetContent(e.target.value)
+    debouncedAutoResize(e.target)
   }
 
   const handleReplyContentChange = (e) => {
-    setReplyContent(e.target.value)
-    autoResizeTextarea(e.target)
+    e.persist()
+    debouncedSetReplyContent(e.target.value)
+    debouncedAutoResize(e.target)
   }
 
   const handleSaveComment = () => {
@@ -139,6 +170,7 @@ const CommentEditor = ({
           imageId: selectedImageId,
           commentId,
           content: replyContent,
+          createdAt: new Date(),
         })
       )
     }
@@ -157,34 +189,12 @@ const CommentEditor = ({
     }
   }
 
-  const formatDate = (date) => {
-    if (!date) return ""
-
-    try {
-      const d = typeof date === "string" ? new Date(date) : date
-
-      if (isNaN(d.getTime())) {
-        return "Invalid date"
-      }
-
-      return d.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    } catch (error) {
-      return ""
-    }
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-lg w-64 overflow-hidden animate-fadeIn">
       {/* Header */}
       <div className="bg-blue-500 text-white px-3 py-2 flex justify-between items-center">
         <h3 className="text-sm font-medium">
-          {isNewComment
-            ? "New Comment"
-            : "Comment"}
+          {isNewComment ? "New Comment" : "Comment"}
         </h3>
         <button
           onClick={handleClose}
@@ -309,7 +319,7 @@ const CommentEditor = ({
                       <p className="text-xs mb-1">{reply.content}</p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs text-gray-400">
-                          {formatDate(reply.createdAt)}
+                          {formatDate(reply?.createdAt)}
                         </span>
                         <div className="flex gap-1">
                           <button
@@ -348,7 +358,7 @@ const CommentEditor = ({
                 />
                 <button
                   onClick={handleSaveReply}
-                  className={`self-end p-1.5 bg-blue-500 text-white rounded-md flex-shrink-0 ${
+                  className={`self-end p-1.5 mb-2 bg-blue-500 text-white rounded-md flex-shrink-0 ${
                     replyContent.trim()
                       ? "hover:bg-blue-600"
                       : "opacity-50 cursor-not-allowed"

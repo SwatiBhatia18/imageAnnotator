@@ -56,7 +56,7 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         isAddingComment: true,
-        commentPosition: { x: action.payload.x, y: action.payload.y },
+        commentPosition: action.payload,
       }
 
     case CANCEL_ADDING_COMMENT:
@@ -124,15 +124,13 @@ const Reducer = (state = initialState, action) => {
     case DELETE_COMMENT: {
       const updatedImages = state.images.map((img) => {
         if (img.id === action.payload.imageId) {
-       
           const filteredComments = img.comments
             ? img.comments.filter((comment) => comment.id !== action.payload.id)
             : []
 
-          
           return { ...img, comments: filteredComments }
         }
-        return img 
+        return img
       })
 
       return {
@@ -143,7 +141,6 @@ const Reducer = (state = initialState, action) => {
 
     case ADD_REPLY: {
       const updatedImages = state.images.map((img) => {
-
         if (img.id === action.payload.imageId) {
           const updatedComments = (img.comments || []).map((comment) => {
             if (comment.id === action.payload.commentId) {
@@ -154,6 +151,7 @@ const Reducer = (state = initialState, action) => {
                   {
                     id: action.payload.id,
                     content: action.payload.content,
+                    createdAt: action.payload.createdAt,
                   },
                 ],
               }
@@ -198,7 +196,6 @@ const Reducer = (state = initialState, action) => {
 
     case DELETE_REPLY: {
       const updatedImages = state.images.map((img) => {
-    
         if (img.id === action.payload.selectedImageId) {
           const updatedComments = (img.comments || []).map((comment) => {
             if (comment.id === action.payload.commentId) {

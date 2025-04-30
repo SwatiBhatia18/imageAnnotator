@@ -1,22 +1,21 @@
-import React from 'react';
-import { MessageSquare } from 'lucide-react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setActiveComment } from '../redux/annotator_details/actions';
+import React from "react"
+import { MessageSquare } from "lucide-react"
+import { useSelector, useDispatch } from "react-redux"
+import { setActiveComment } from "../redux/annotator_details/actions"
+import { formatDate } from "../utils/common"
 
 const CommentSidebar = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const images = useSelector((state) => state.anotator_details.images);
-  const selectedImageId = useSelector((state) => state.anotator_details.selectedImageId);
-  const activeCommentId = useSelector((state) => state.anotator_details.activeCommentId);
+  const images = useSelector((state) => state.anotator_details.images)
+  const selectedImageId = useSelector(
+    (state) => state.anotator_details.selectedImageId
+  )
+  const activeCommentId = useSelector(
+    (state) => state.anotator_details.activeCommentId
+  )
 
-  const selectedImage = images.find((img) => img.id === selectedImageId);
-
-  const formatDate = (date) => {
-    if (!(date instanceof Date) && typeof date !== 'string') return '';
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  const selectedImage = images.find((img) => img.id === selectedImageId)
 
   if (!selectedImage || selectedImage?.comments?.length === 0) {
     return (
@@ -26,13 +25,12 @@ const CommentSidebar = () => {
           <h2 className="font-medium">Comments</h2>
         </div>
         <p className="text-sm text-gray-400">
-          {!selectedImage 
-            ? 'Select an image to view comments' 
-            : 'No comments yet. Click on the image to add a comment.'
-          }
+          {!selectedImage
+            ? "Select an image to view comments"
+            : "No comments yet. Click on the image to add a comment."}
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -40,18 +38,20 @@ const CommentSidebar = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <MessageSquare size={18} className="text-blue-500" />
-          <h2 className="font-medium">Comments ({selectedImage?.comments?.length})</h2>
+          <h2 className="font-medium">
+            Comments ({selectedImage?.comments?.length})
+          </h2>
         </div>
       </div>
 
       <div className="space-y-3">
         {selectedImage?.comments?.map((comment, index) => (
-          <div 
+          <div
             key={comment.id}
             className={`p-3 rounded-md cursor-pointer transition-all ${
               activeCommentId === comment.id
-                ? 'bg-blue-50 border-l-4 border-blue-500'
-                : 'bg-gray-50 hover:bg-gray-100'
+                ? "bg-blue-50 border-l-4 border-blue-500"
+                : "bg-gray-50 hover:bg-gray-100"
             }`}
             onClick={() => dispatch(setActiveComment(comment.id))}
           >
@@ -62,20 +62,23 @@ const CommentSidebar = () => {
               <div className="flex-1 min-w-0">
                 <p className="text-sm truncate">{comment.content}</p>
                 <div className="flex justify-between items-center mt-1">
-                  <span className="text-xs text-gray-400">{formatDate(comment.createdAt)}</span>
-                  {comment?.replies?.length > 0 && (
+                  <span className="text-xs text-gray-400">
+                    {formatDate(comment.createdAt)}
+                  </span>
+                </div>
+                {comment?.replies?.length > 0 && (
                     <span className="text-xs text-gray-500">
-                      {comment?.replies?.length} {comment?.replies?.length === 1 ? 'reply' : 'replies'}
+                      {comment?.replies?.length}{" "}
+                      {comment?.replies?.length === 1 ? "reply" : "replies"}
                     </span>
                   )}
-                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommentSidebar;
+export default CommentSidebar

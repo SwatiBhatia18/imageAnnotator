@@ -1,38 +1,37 @@
-import React, { useRef } from "react";
-import { Upload } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { addImage } from "../redux/annotator_details/actions";
+import React, { useRef } from "react"
+import { Upload } from "lucide-react"
+import { useDispatch } from "react-redux"
+import { addImage } from "../redux/annotator_details/actions"
+import { fileToBase64 } from "../utils/common"
 
 const ImageUploader = () => {
-  const fileInputRef = useRef(null);
-  const dispatch = useDispatch();
+  const fileInputRef = useRef(null)
+  const dispatch = useDispatch()
 
   const handleClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleFileChange = async (e) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+      const file = files[i]
       if (file.type.startsWith("image/")) {
-        const id = `${Date.now()}-${i}`; 
+        const base64 = await fileToBase64(file)
+        const id = `${Date.now()}-${i}`
         const imageObj = {
           id,
           name: file.name,
-          src: URL.createObjectURL(file), 
+          src: base64, 
           file,
-        };
-        dispatch(addImage(imageObj));
+          comments: [],
+        }
+        dispatch(addImage(imageObj))
       }
     }
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+  }
 
   return (
     <div>
@@ -54,7 +53,7 @@ const ImageUploader = () => {
         <span>Upload Images</span>
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default ImageUploader;
+export default ImageUploader

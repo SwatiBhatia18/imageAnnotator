@@ -1,51 +1,47 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setActiveComment } from '../redux/annotator_details/actions';
-import CommentEditor from './CommentEditor';
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { setActiveComment } from "../redux/annotator_details/actions"
+import CommentEditor from "./CommentEditor"
 
 const CommentMarker = ({ comment, index, isActive }) => {
-  const dispatch = useDispatch();
-  const activeCommentId = useSelector((state) => state.anotator_details.activeCommentId);
+  const dispatch = useDispatch()
 
   const handleMarkerClick = (e) => {
-    e.stopPropagation();
-    dispatch(setActiveComment(isActive ? null : comment.id));
-  };
+    e.stopPropagation()
+    dispatch(setActiveComment(isActive ? null : comment.id))
+  }
 
   return (
-    <div 
+    <div
       className="absolute comment-marker"
-      style={{ 
-        left: `${comment.x}%`, 
+      style={{
+        left: `${comment.x}%`,
         top: `${comment.y}%`,
-        zIndex: isActive ? 30 : 20
+        zIndex: isActive ? 30 : 20,
       }}
     >
-      {/* Marker */}
       <button
         className={`absolute w-6 h-6 rounded-full -ml-3 -mt-3 flex items-center justify-center text-xs font-medium transition-all ${
-          isActive 
-            ? 'bg-blue-600 text-white scale-110' 
-            : 'bg-blue-500 text-white hover:bg-blue-600'
+          isActive
+            ? "bg-blue-600 text-white scale-110"
+            : "bg-blue-500 text-white hover:bg-blue-600"
         }`}
         onClick={handleMarkerClick}
         aria-label={`Comment ${index}`}
       >
         {index}
       </button>
-
-      {/* Comment editor when active */}
       {isActive && (
         <div className="absolute mt-4 ml-2">
-          <CommentEditor 
-            commentId={comment.id} 
-            initialContent={comment.content} 
+          <CommentEditor
+            commentId={comment.id}
+            initialContent={comment.content}
             replies={comment.replies}
           />
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CommentMarker;
+export default CommentMarker

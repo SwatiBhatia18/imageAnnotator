@@ -13,9 +13,9 @@ import {
   SELECT_IMAGE,
 } from "./actiontypes"
 
-export const startAddingComment = ({ x, y }) => ({
+export const startAddingComment = (payload) => ({
   type: START_ADDING_COMMENT,
-  payload: { x, y },
+  payload,
 })
 
 export const cancelAddingComment = () => ({
@@ -32,37 +32,37 @@ export const updateComment = ({ id, imageId, content }) => ({
   payload: { id, imageId, content },
 })
 
-export const deleteComment = ({ id, imageId }) => ({
+export const deleteComment = (payload) => ({
   type: DELETE_COMMENT,
-  payload: { id, imageId },
-});
+  payload,
+})
 
-export const addReply = ({ id, imageId, commentId, content }) => ({
+export const addReply = (payload) => ({
   type: ADD_REPLY,
-  payload: { id, imageId, commentId, content },
+  payload,
 })
 
-export const updateReply = ({ replyId, imageId, commentId, content }) => ({
+export const updateReply = (payload) => ({
   type: UPDATE_REPLY,
-  payload: { replyId, imageId, commentId, content },
+  payload,
 })
 
-export const deleteReply = ({ replyId, selectedImageId, commentId }) => { 
+export const deleteReply = (payload) => {
   return {
     type: DELETE_REPLY,
-    payload: { replyId, selectedImageId, commentId },
-  };
-};
+    payload,
+  }
+}
 
 export const setActiveComment = (id) => ({
   type: SET_ACTIVE_COMMENT,
   payload: { id },
 })
 
-export const addImage = ({ id, file, src, comments }) => ({
+export const addImage = (payload) => ({
   type: ADD_IMAGE,
-  payload: { id, file, src, comments },
-});
+  payload,
+})
 
 export const removeImage = (id) => ({
   type: REMOVE_IMAGE,
